@@ -1,9 +1,172 @@
+// import { Ionicons } from "@expo/vector-icons";
+// import { Tabs } from "expo-router";
+// import { useEffect, useRef } from "react";
+// import { Animated, StyleSheet, View } from "react-native";
+
+// /* 🔥 Animated Icon */
+// function AnimatedTabIcon({ name, color, size, focused }) {
+//   const scaleAnim = useRef(new Animated.Value(1)).current;
+//   const translateYAnim = useRef(new Animated.Value(0)).current;
+
+//   useEffect(() => {
+//     Animated.parallel([
+//       Animated.spring(scaleAnim, {
+//         toValue: focused ? 1.2 : 1,
+//         friction: 4,
+//         useNativeDriver: true,
+//       }),
+//       Animated.spring(translateYAnim, {
+//         toValue: focused ? -4 : 0,
+//         friction: 4,
+//         useNativeDriver: true,
+//       }),
+//     ]).start();
+//   }, [focused]);
+
+//   return (
+//     <Animated.View
+//       style={{
+//         alignItems: "center",
+//         transform: [{ scale: scaleAnim }, { translateY: translateYAnim }],
+//       }}
+//     >
+//       <Ionicons name={name} size={size} color={color} />
+//       {focused && <View style={styles.activeDot} />}
+//     </Animated.View>
+//   );
+// }
+
+// /* 🔻 Bottom Tabs Layout */
+// export default function Layout() {
+//   return (
+//     <Tabs
+//       screenOptions={{
+//         headerShown: false,
+//         tabBarShowLabel: true,
+//         tabBarActiveTintColor: "#ff4757",
+//         tabBarInactiveTintColor: "#9ca3af",
+//         tabBarLabelStyle: {
+//           fontSize: 11,
+//           fontWeight: "700",
+//           marginTop: 4,
+//         },
+//         tabBarStyle: {
+//           position: "absolute",
+//           bottom: 18,
+//           left: 16,
+//           right: 16,
+//           height: 76,
+//           borderRadius: 28,
+//           backgroundColor: "#ffffff",
+//           paddingBottom: 12,
+//           paddingTop: 12,
+//           elevation: 15,
+//           shadowColor: "#000",
+//           shadowOffset: { width: 0, height: 10 },
+//           shadowOpacity: 0.15,
+//           shadowRadius: 20,
+//         },
+//       }}
+//     >
+//       {/* 🏠 Home */}
+//       <Tabs.Screen
+//         name="index"
+//         options={{
+//           title: "Home",
+//           tabBarIcon: ({ color, size, focused }) => (
+//             <AnimatedTabIcon
+//               name={focused ? "home" : "home-outline"}
+//               color={color}
+//               size={size}
+//               focused={focused}
+//             />
+//           ),
+//         }}
+//       />
+
+//       {/* 👥 Members */}
+//       <Tabs.Screen
+//         name="members"
+//         options={{
+//           title: "Members",
+//           tabBarIcon: ({ color, size, focused }) => (
+//             <AnimatedTabIcon
+//               name={focused ? "people" : "people-outline"}
+//               color={color}
+//               size={size}
+//               focused={focused}
+//             />
+//           ),
+//         }}
+//       />
+
+//       {/* 📚 References */}
+//       <Tabs.Screen
+//         name="references"
+//         options={{
+//           title: "References",
+//           tabBarIcon: ({ color, size, focused }) => (
+//             <AnimatedTabIcon
+//               name={focused ? "book" : "book-outline"}
+//               color={color}
+//               size={size}
+//               focused={focused}
+//             />
+//           ),
+//         }}
+//       />
+
+//       {/* 📅 Schedule */}
+//       <Tabs.Screen
+//         name="schedule"
+//         options={{
+//           title: "Schedule",
+//           tabBarIcon: ({ color, size, focused }) => (
+//             <AnimatedTabIcon
+//               name={focused ? "calendar" : "calendar-outline"}
+//               color={color}
+//               size={size}
+//               focused={focused}
+//             />
+//           ),
+//         }}
+//       />
+
+//       {/* 👤 Profile */}
+//       <Tabs.Screen
+//         name="profile"
+//         options={{
+//           title: "Profile",
+//           tabBarIcon: ({ color, size, focused }) => (
+//             <AnimatedTabIcon
+//               name={focused ? "person" : "person-outline"}
+//               color={color}
+//               size={size}
+//               focused={focused}
+//             />
+//           ),
+//         }}
+//       />
+//     </Tabs>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   activeDot: {
+//     width: 6,
+//     height: 6,
+//     borderRadius: 3,
+//     backgroundColor: "#ff4757",
+//     marginTop: 4,
+//   },
+// });
+
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { useEffect, useRef } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 
-/* 🔥 Animated Icon */
+/* 🔥 Animated Icon Component */
 function AnimatedTabIcon({ name, color, size, focused }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const translateYAnim = useRef(new Animated.Value(0)).current;
@@ -36,13 +199,11 @@ function AnimatedTabIcon({ name, color, size, focused }) {
   );
 }
 
-/* 🔻 Bottom Tabs Layout */
 export default function Layout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarShowLabel: true,
         tabBarActiveTintColor: "#ff4757",
         tabBarInactiveTintColor: "#9ca3af",
         tabBarLabelStyle: {
@@ -58,13 +219,12 @@ export default function Layout() {
           height: 76,
           borderRadius: 28,
           backgroundColor: "#ffffff",
-          paddingBottom: 12,
-          paddingTop: 12,
+          paddingVertical: 12,
           elevation: 15,
           shadowColor: "#000",
-          shadowOffset: { width: 0, height: 10 },
-          shadowOpacity: 0.15,
-          shadowRadius: 20,
+          shadowOpacity: 0.1,
+          shadowRadius: 10,
+          shadowOffset: { width: 0, height: 5 },
         },
       }}
     >
@@ -73,12 +233,10 @@ export default function Layout() {
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, size, focused }) => (
+          tabBarIcon: (props) => (
             <AnimatedTabIcon
-              name={focused ? "home" : "home-outline"}
-              color={color}
-              size={size}
-              focused={focused}
+              {...props}
+              name={props.focused ? "home" : "home-outline"}
             />
           ),
         }}
@@ -89,28 +247,24 @@ export default function Layout() {
         name="members"
         options={{
           title: "Members",
-          tabBarIcon: ({ color, size, focused }) => (
+          tabBarIcon: (props) => (
             <AnimatedTabIcon
-              name={focused ? "people" : "people-outline"}
-              color={color}
-              size={size}
-              focused={focused}
+              {...props}
+              name={props.focused ? "people" : "people-outline"}
             />
           ),
         }}
       />
 
-      {/* 📚 References */}
+      {/* 🏋 Trainer */}
       <Tabs.Screen
-        name="references"
+        name="trainer"
         options={{
-          title: "References",
-          tabBarIcon: ({ color, size, focused }) => (
+          title: "Trainer",
+          tabBarIcon: (props) => (
             <AnimatedTabIcon
-              name={focused ? "book" : "book-outline"}
-              color={color}
-              size={size}
-              focused={focused}
+              {...props}
+              name={props.focused ? "barbell" : "barbell-outline"}
             />
           ),
         }}
@@ -121,28 +275,24 @@ export default function Layout() {
         name="schedule"
         options={{
           title: "Schedule",
-          tabBarIcon: ({ color, size, focused }) => (
+          tabBarIcon: (props) => (
             <AnimatedTabIcon
-              name={focused ? "calendar" : "calendar-outline"}
-              color={color}
-              size={size}
-              focused={focused}
+              {...props}
+              name={props.focused ? "calendar" : "calendar-outline"}
             />
           ),
         }}
       />
 
-      {/* 👤 Profile */}
+      {/* ☰ More */}
       <Tabs.Screen
-        name="profile"
+        name="more"
         options={{
-          title: "Profile",
-          tabBarIcon: ({ color, size, focused }) => (
+          title: "More",
+          tabBarIcon: (props) => (
             <AnimatedTabIcon
-              name={focused ? "person" : "person-outline"}
-              color={color}
-              size={size}
-              focused={focused}
+              {...props}
+              name={props.focused ? "menu" : "menu-outline"}
             />
           ),
         }}
