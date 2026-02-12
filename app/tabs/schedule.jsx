@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 
-export default function ProfileScreen() {
+export default function ScheduleScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>👤 Profile Screen</Text>
+      <Text style={styles.text}>📅 Schedule Screen</Text>
     </View>
   );
 }
