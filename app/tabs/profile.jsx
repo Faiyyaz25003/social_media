@@ -9,6 +9,7 @@ import {
   Pressable,
 } from "react-native";
 import { useState } from "react";
+import { useRouter } from "expo-router";
 
 /* ─── Hamburger Icon Component ─── */
 function HamburgerIcon() {
@@ -39,10 +40,15 @@ const STATS = [
 ];
 
 const QUICK_ACTIONS = [
-  { label: "Add Member", icon: "➕", color: "#E8380D" },
-  { label: "Schedule", icon: "📅", color: "#E07B00" },
-  { label: "Reports", icon: "📊", color: "#0088CC" },
-  { label: "Settings", icon: "⚙️", color: "#7B3FBF" },
+  {
+    label: "Add Member",
+    icon: "➕",
+    color: "#E8380D",
+    route: "/member/AddMember",
+  },
+  { label: "Schedule", icon: "📅", color: "#E07B00", route: "/home/schedule" },
+  { label: "Reports", icon: "📊", color: "#0088CC", route: "home/dashboard" },
+  { label: "Settings", icon: "⚙️", color: "#7B3FBF", route: "/settings" },
 ];
 
 const RECENT_ACTIVITY = [
@@ -69,6 +75,7 @@ const RECENT_ACTIVITY = [
 
 export default function ProfileScreen() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <View style={styles.root}>
@@ -217,6 +224,7 @@ export default function ProfileScreen() {
                 key={i}
                 style={styles.actionBtn}
                 activeOpacity={0.75}
+                onPress={() => router.push(a.route)}
               >
                 <View
                   style={[
