@@ -1,12 +1,36 @@
+
+import { useState } from "react";
 import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
-  View,
-  ScrollView,
   TouchableOpacity,
-  Image,
-  StatusBar,
+  View,
 } from "react-native";
+
+/* ─── Hamburger Icon Component ─── */
+function HamburgerIcon() {
+  return (
+    <View style={hamburger.icon}>
+      <View style={hamburger.line} />
+      <View style={hamburger.line} />
+      <View style={hamburger.line} />
+    </View>
+  );
+}
+
+const hamburger = StyleSheet.create({
+  icon: { gap: 5, padding: 4 },
+  line: {
+    width: 22,
+    height: 2.5,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 2,
+  },
+});
 
 const STATS = [
   { label: "Members", value: "1,284", icon: "👥" },
@@ -16,10 +40,10 @@ const STATS = [
 ];
 
 const QUICK_ACTIONS = [
-  { label: "Add Member", icon: "➕", color: "#FF4D00" },
-  { label: "Schedule", icon: "📅", color: "#FF9500" },
-  { label: "Reports", icon: "📊", color: "#00C2FF" },
-  { label: "Settings", icon: "⚙️", color: "#A259FF" },
+  { label: "Add Member", icon: "➕", color: "#E8380D" },
+  { label: "Schedule", icon: "📅", color: "#E07B00" },
+  { label: "Reports", icon: "📊", color: "#0088CC" },
+  { label: "Settings", icon: "⚙️", color: "#7B3FBF" },
 ];
 
 const RECENT_ACTIVITY = [
@@ -45,9 +69,91 @@ const RECENT_ACTIVITY = [
 ];
 
 export default function ProfileScreen() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="light-content" backgroundColor="#0A0A0A" />
+      <StatusBar barStyle="light-content" backgroundColor="#E8380D" />
+
+      {/* ── DROPDOWN MENU MODAL ── */}
+      <Modal
+        transparent
+        visible={menuOpen}
+        animationType="fade"
+        onRequestClose={() => setMenuOpen(false)}
+      >
+        <Pressable style={styles.backdrop} onPress={() => setMenuOpen(false)}>
+          <Pressable style={styles.dropdownMenu} onPress={() => {}}>
+            {/* Menu Header */}
+            <View style={styles.menuHeader}>
+              <Text style={styles.menuTitle}>OPTIONS</Text>
+              <TouchableOpacity
+                onPress={() => setMenuOpen(false)}
+                style={styles.closeBtn}
+              >
+                <Text style={styles.closeBtnText}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.menuDivider} />
+
+            {/* Change Password */}
+            <TouchableOpacity
+              style={styles.menuItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                setMenuOpen(false);
+                // navigation.navigate('ChangePassword')
+              }}
+            >
+              <View
+                style={[
+                  styles.menuIconBox,
+                  { backgroundColor: "#FFF3E0", borderColor: "#FFB74D" },
+                ]}
+              >
+                <Text style={styles.menuItemIcon}>🔒</Text>
+              </View>
+              <View style={styles.menuItemText}>
+                <Text style={styles.menuItemLabel}>Change Password</Text>
+                <Text style={styles.menuItemSub}>
+                  Update your account password
+                </Text>
+              </View>
+              <Text style={styles.menuChevron}>›</Text>
+            </TouchableOpacity>
+
+            <View style={styles.menuDivider} />
+
+            {/* Logout */}
+            <TouchableOpacity
+              style={styles.menuItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                setMenuOpen(false);
+                // handle logout
+              }}
+            >
+              <View
+                style={[
+                  styles.menuIconBox,
+                  { backgroundColor: "#FFEBEE", borderColor: "#EF9A9A" },
+                ]}
+              >
+                <Text style={styles.menuItemIcon}>🚪</Text>
+              </View>
+              <View style={styles.menuItemText}>
+                <Text style={[styles.menuItemLabel, { color: "#D32F2F" }]}>
+                  Logout
+                </Text>
+                <Text style={styles.menuItemSub}>Sign out of your account</Text>
+              </View>
+              <Text style={[styles.menuChevron, { color: "#D32F2F" }]}>›</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
@@ -55,7 +161,6 @@ export default function ProfileScreen() {
       >
         {/* ── HEADER BAND ── */}
         <View style={styles.headerBand}>
-          <View style={styles.accentStripe} />
           <View style={styles.headerContent}>
             {/* Avatar */}
             <View style={styles.avatarWrapper}>
@@ -76,9 +181,13 @@ export default function ProfileScreen() {
               </Text>
             </View>
 
-            {/* Edit button */}
-            <TouchableOpacity style={styles.editBtn}>
-              <Text style={styles.editBtnText}>EDIT</Text>
+            {/* ── HAMBURGER BUTTON ── */}
+            <TouchableOpacity
+              style={styles.hamburgerBtn}
+              activeOpacity={0.7}
+              onPress={() => setMenuOpen(true)}
+            >
+              <HamburgerIcon />
             </TouchableOpacity>
           </View>
         </View>
@@ -110,7 +219,12 @@ export default function ProfileScreen() {
                 style={styles.actionBtn}
                 activeOpacity={0.75}
               >
-                <View style={[styles.actionIconBox, { borderColor: a.color }]}>
+                <View
+                  style={[
+                    styles.actionIconBox,
+                    { borderColor: a.color, backgroundColor: a.color + "15" },
+                  ]}
+                >
                   <Text style={styles.actionIcon}>{a.icon}</Text>
                 </View>
                 <Text style={[styles.actionLabel, { color: a.color }]}>
@@ -151,9 +265,9 @@ export default function ProfileScreen() {
           <Text style={styles.sectionLabel}>MONTHLY TARGETS</Text>
           <View style={styles.perfCard}>
             {[
-              { label: "New Members", pct: 78, color: "#FF4D00" },
-              { label: "Revenue Goal", pct: 65, color: "#FF9500" },
-              { label: "Retention Rate", pct: 91, color: "#00C2FF" },
+              { label: "New Members", pct: 78, color: "#E8380D" },
+              { label: "Revenue Goal", pct: 65, color: "#E07B00" },
+              { label: "Retention Rate", pct: 91, color: "#0088CC" },
             ].map((p, i) => (
               <View key={i} style={styles.perfItem}>
                 <View style={styles.perfHeaderRow}>
@@ -197,58 +311,133 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* ── SIGN OUT ── */}
-        <TouchableOpacity style={styles.signOutBtn} activeOpacity={0.8}>
-          <Text style={styles.signOutText}>🚪 SIGN OUT</Text>
-        </TouchableOpacity>
-
-        <View style={{ height: 40 }} />
+        <View style={{ height: 50 }} />
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
+  root: { flex: 1, backgroundColor: "#F5F5F5" },
+  scroll: { flex: 1 },
+  scrollContent: { paddingBottom: 20 },
+
+  /* ── BACKDROP & DROPDOWN ── */
+  backdrop: {
     flex: 1,
-    backgroundColor: "#0A0A0A",
+    backgroundColor: "rgba(0,0,0,0.35)",
+    justifyContent: "flex-start",
+    alignItems: "flex-end",
   },
-  scroll: {
-    flex: 1,
+  dropdownMenu: {
+    marginTop: 72,
+    marginRight: 16,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#E8E8E8",
+    width: 260,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 12,
   },
-  scrollContent: {
-    paddingBottom: 20,
+  menuHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: "#FAFAFA",
+  },
+  menuTitle: {
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 2.5,
+    color: "#AAAAAA",
+  },
+  closeBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#F0F0F0",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  closeBtnText: {
+    color: "#888888",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  menuDivider: {
+    height: 1,
+    backgroundColor: "#F0F0F0",
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 12,
+    backgroundColor: "#FFFFFF",
+  },
+  menuIconBox: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    borderWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  menuItemIcon: { fontSize: 18 },
+  menuItemText: { flex: 1 },
+  menuItemLabel: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#1A1A1A",
+    marginBottom: 2,
+  },
+  menuItemSub: {
+    fontSize: 11,
+    color: "#AAAAAA",
+    fontWeight: "500",
+  },
+  menuChevron: {
+    fontSize: 22,
+    color: "#CCCCCC",
+    fontWeight: "300",
+    marginTop: -2,
   },
 
   /* ── HEADER ── */
   headerBand: {
-    backgroundColor: "#111111",
-    paddingBottom: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: "#1E1E1E",
-    overflow: "hidden",
-  },
-  accentStripe: {
-    height: 4,
-    backgroundColor: "#FF4D00",
-    marginBottom: 0,
+    backgroundColor: "#E8380D",
+    paddingBottom: 28,
+    paddingTop: 16,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    shadowColor: "#E8380D",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
   },
   headerContent: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 10,
     gap: 14,
   },
-  avatarWrapper: {
-    position: "relative",
-  },
+  avatarWrapper: { position: "relative" },
   avatarRing: {
     width: 72,
     height: 72,
     borderRadius: 36,
-    borderWidth: 2,
-    borderColor: "#FF4D00",
+    borderWidth: 2.5,
+    borderColor: "rgba(255,255,255,0.6)",
     padding: 3,
     justifyContent: "center",
     alignItems: "center",
@@ -257,13 +446,11 @@ const styles = StyleSheet.create({
     width: 62,
     height: 62,
     borderRadius: 31,
-    backgroundColor: "#1A1A1A",
+    backgroundColor: "rgba(255,255,255,0.2)",
     justifyContent: "center",
     alignItems: "center",
   },
-  avatarEmoji: {
-    fontSize: 30,
-  },
+  avatarEmoji: { fontSize: 30 },
   onlineBadge: {
     position: "absolute",
     bottom: 2,
@@ -273,127 +460,107 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     backgroundColor: "#00E676",
     borderWidth: 2,
-    borderColor: "#111111",
+    borderColor: "#E8380D",
   },
-  nameBlock: {
-    flex: 1,
-  },
+  nameBlock: { flex: 1 },
   roleTag: {
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 2,
-    color: "#FF4D00",
+    color: "rgba(255,255,255,0.75)",
     marginBottom: 2,
   },
   adminName: {
     fontSize: 22,
     fontWeight: "900",
     color: "#FFFFFF",
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
   },
-  gymName: {
-    fontSize: 12,
-    color: "#888888",
-    marginTop: 2,
-  },
-  editBtn: {
-    backgroundColor: "transparent",
-    borderWidth: 1.5,
-    borderColor: "#FF4D00",
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 6,
-  },
-  editBtnText: {
-    color: "#FF4D00",
-    fontSize: 11,
-    fontWeight: "800",
-    letterSpacing: 1.5,
+  gymName: { fontSize: 12, color: "rgba(255,255,255,0.7)", marginTop: 2 },
+
+  /* ── HAMBURGER BUTTON ── */
+  hamburgerBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 10,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.3)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   /* ── SECTIONS ── */
-  section: {
-    paddingHorizontal: 20,
-    marginTop: 28,
-  },
+  section: { paddingHorizontal: 20, marginTop: 24 },
   sectionLabel: {
     fontSize: 11,
     fontWeight: "800",
     letterSpacing: 2.5,
-    color: "#555555",
+    color: "#AAAAAA",
     marginBottom: 12,
   },
 
   /* ── STATS ── */
-  statsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
+  statsGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   statCard: {
     flex: 1,
     minWidth: "45%",
-    backgroundColor: "#141414",
-    borderRadius: 12,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
     padding: 16,
     alignItems: "flex-start",
     borderWidth: 1,
-    borderColor: "#1E1E1E",
+    borderColor: "#EEEEEE",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
   },
   statCardAccent: {
-    borderColor: "#FF4D0033",
+    borderColor: "#E8380D",
+    borderWidth: 1.5,
   },
-  statIcon: {
-    fontSize: 22,
-    marginBottom: 8,
-  },
+  statIcon: { fontSize: 22, marginBottom: 8 },
   statValue: {
     fontSize: 26,
     fontWeight: "900",
-    color: "#FFFFFF",
+    color: "#1A1A1A",
     letterSpacing: -0.5,
   },
   statLabel: {
     fontSize: 12,
-    color: "#666666",
+    color: "#999999",
     marginTop: 2,
     fontWeight: "600",
   },
 
   /* ── QUICK ACTIONS ── */
-  actionsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  actionBtn: {
-    alignItems: "center",
-    gap: 8,
-  },
+  actionsRow: { flexDirection: "row", justifyContent: "space-between" },
+  actionBtn: { alignItems: "center", gap: 8 },
   actionIconBox: {
     width: 58,
     height: 58,
     borderRadius: 14,
-    backgroundColor: "#141414",
     borderWidth: 1.5,
     justifyContent: "center",
     alignItems: "center",
   },
-  actionIcon: {
-    fontSize: 24,
-  },
-  actionLabel: {
-    fontSize: 10,
-    fontWeight: "800",
-    letterSpacing: 0.5,
-  },
+  actionIcon: { fontSize: 24 },
+  actionLabel: { fontSize: 10, fontWeight: "800", letterSpacing: 0.5 },
 
   /* ── INFO CARD ── */
   infoCard: {
-    backgroundColor: "#111111",
+    backgroundColor: "#FFFFFF",
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#1E1E1E",
+    borderColor: "#EEEEEE",
     overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
   },
   infoRow: {
     flexDirection: "row",
@@ -402,75 +569,60 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     gap: 12,
   },
-  infoRowBorder: {
-    borderTopWidth: 1,
-    borderTopColor: "#1A1A1A",
-  },
-  infoIcon: {
-    fontSize: 18,
-    width: 28,
-  },
-  infoText: {
-    flex: 1,
-  },
+  infoRowBorder: { borderTopWidth: 1, borderTopColor: "#F5F5F5" },
+  infoIcon: { fontSize: 18, width: 28 },
+  infoText: { flex: 1 },
   infoLabel: {
     fontSize: 11,
-    color: "#555555",
+    color: "#AAAAAA",
     fontWeight: "700",
     letterSpacing: 0.5,
     marginBottom: 1,
   },
-  infoValue: {
-    fontSize: 14,
-    color: "#DDDDDD",
-    fontWeight: "600",
-  },
+  infoValue: { fontSize: 14, color: "#222222", fontWeight: "600" },
 
   /* ── PERFORMANCE ── */
   perfCard: {
-    backgroundColor: "#111111",
+    backgroundColor: "#FFFFFF",
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#1E1E1E",
+    borderColor: "#EEEEEE",
     padding: 16,
     gap: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
   },
-  perfItem: {
-    gap: 8,
-  },
+  perfItem: { gap: 8 },
   perfHeaderRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  perfLabel: {
-    fontSize: 13,
-    color: "#AAAAAA",
-    fontWeight: "700",
-  },
-  perfPct: {
-    fontSize: 14,
-    fontWeight: "900",
-    letterSpacing: 0.5,
-  },
+  perfLabel: { fontSize: 13, color: "#555555", fontWeight: "700" },
+  perfPct: { fontSize: 14, fontWeight: "900", letterSpacing: 0.5 },
   barTrack: {
-    height: 6,
-    backgroundColor: "#1E1E1E",
-    borderRadius: 3,
+    height: 7,
+    backgroundColor: "#F0F0F0",
+    borderRadius: 4,
     overflow: "hidden",
   },
-  barFill: {
-    height: "100%",
-    borderRadius: 3,
-  },
+  barFill: { height: "100%", borderRadius: 4 },
 
   /* ── ACTIVITY ── */
   activityCard: {
-    backgroundColor: "#111111",
+    backgroundColor: "#FFFFFF",
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#1E1E1E",
+    borderColor: "#EEEEEE",
     overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
   },
   activityRow: {
     flexDirection: "row",
@@ -479,55 +631,19 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     gap: 12,
   },
-  activityBorder: {
-    borderTopWidth: 1,
-    borderTopColor: "#1A1A1A",
-  },
+  activityBorder: { borderTopWidth: 1, borderTopColor: "#F5F5F5" },
   activityAvatar: {
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: "#1A1A1A",
+    backgroundColor: "#FFF3F0",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#222222",
+    borderColor: "#FFD5CC",
   },
-  activityInfo: {
-    flex: 1,
-  },
-  activityName: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#EEEEEE",
-  },
-  activityAction: {
-    fontSize: 12,
-    color: "#666666",
-    marginTop: 1,
-  },
-  activityTime: {
-    fontSize: 11,
-    color: "#444444",
-    fontWeight: "600",
-  },
-
-  /* ── SIGN OUT ── */
-  signOutBtn: {
-    marginHorizontal: 20,
-    marginTop: 28,
-    marginBottom: 42,
-    borderWidth: 1,
-    borderColor: "#2A2A2A",
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: "center",
-    backgroundColor: "#111111",
-  },
-  signOutText: {
-    fontSize: 13,
-    fontWeight: "800",
-    letterSpacing: 2,
-    color: "#FF4D4D",
-  },
+  activityInfo: { flex: 1 },
+  activityName: { fontSize: 14, fontWeight: "700", color: "#1A1A1A" },
+  activityAction: { fontSize: 12, color: "#AAAAAA", marginTop: 1 },
+  activityTime: { fontSize: 11, color: "#CCCCCC", fontWeight: "600" },
 });
