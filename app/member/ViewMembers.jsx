@@ -1,46 +1,82 @@
-import { FlatList, StyleSheet, Text, View, TextInput } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
-
-const members = [
-  { id: "1", name: "Rahul Sharma", plan: "Monthly" },
-  { id: "2", name: "Aman Khan", plan: "Quarterly" },
-  { id: "3", name: "Neha Verma", plan: "Yearly" },
-];
+import {
+  Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function ViewMembers() {
-  const [search, setSearch] = useState("");
+  // 🔥 Temporary Dummy Data (baad me database se aayega)
+  const [members, setMembers] = useState([
+    {
+      id: "1",
+      name: "Rahul Sharma",
+      phone: "9876543210",
+      age: "25",
+      plan: "Monthly",
+      fees: "1500",
+    },
+    {
+      id: "2",
+      name: "Aman Khan",
+      phone: "9123456780",
+      age: "28",
+      plan: "Yearly",
+      fees: "12000",
+    },
+  ]);
 
-  const filteredMembers = members.filter(
-    (item) =>
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.plan.toLowerCase().includes(search.toLowerCase()),
+  const deleteMember = (id) => {
+    Alert.alert("Delete", "Are you sure you want to delete?", [
+      { text: "Cancel" },
+      {
+        text: "Yes",
+        onPress: () => setMembers(members.filter((item) => item.id !== id)),
+      },
+    ]);
+  };
+
+  const renderItem = ({ item }) => (
+    <View style={styles.card}>
+      <View style={styles.topRow}>
+        <Text style={styles.name}>{item.name}</Text>
+        <TouchableOpacity onPress={() => deleteMember(item.id)}>
+          <Ionicons name="trash-outline" size={20} color="#e63946" />
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.detail}>📞 {item.phone}</Text>
+      <Text style={styles.detail}>🎂 Age: {item.age}</Text>
+      <Text style={styles.detail}>💳 Plan: {item.plan}</Text>
+      <Text style={styles.detail}>💰 Fees: ₹{item.fees}</Text>
+    </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>👥 Members</Text>
+      {/* 🔙 Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={24} color="#333" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>View Members</Text>
+      </View>
 
-      {/* 🔍 Search Bar */}
-      <TextInput
-        placeholder="Search member or plan..."
-        value={search}
-        onChangeText={setSearch}
-        style={styles.search}
-        placeholderTextColor="#999"
-      />
-
-      <FlatList
-        data={filteredMembers}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.plan}>Plan: {item.plan}</Text>
-          </View>
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No members found</Text>}
-      />
+      {members.length === 0 ? (
+        <Text style={styles.emptyText}>No Members Added Yet</Text>
+      ) : (
+        <FlatList
+          data={members}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </View>
   );
 }
@@ -48,42 +84,45 @@ export default function ViewMembers() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
-    padding: 20,
+    backgroundColor: "#f5f6fa",
+    padding: 16,
   },
-  heading: {
-    fontSize: 24,
-    fontWeight: "800",
-    marginBottom: 12,
-    marginTop: 32,
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 20,
   },
-  search: {
-    backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 10,
-    marginBottom: 15,
-    fontSize: 14,
-    elevation: 2,
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
   },
   card: {
     backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 12,
-    elevation: 3,
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 2,
+  },
+  topRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
   },
   name: {
-    fontSize: 16,
-    fontWeight: "700",
+    fontSize: 18,
+    fontWeight: "bold",
   },
-  plan: {
-    fontSize: 13,
-    color: "#666",
-    marginTop: 4,
+  detail: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 4,
   },
-  empty: {
+  emptyText: {
     textAlign: "center",
+    marginTop: 50,
+    fontSize: 16,
     color: "#888",
-    marginTop: 40,
   },
 });
