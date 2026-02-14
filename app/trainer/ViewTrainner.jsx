@@ -84,7 +84,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 12,
-    textAlign: "center",
+    marginTop: 13,
+    textAlign: "left",
   },
   searchContainer: {
     flexDirection: "row",

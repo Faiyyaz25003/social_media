@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: "800",
     marginBottom: 20,
+    marginTop: 13,
   },
   card: {
     borderWidth: 2,

@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     color: "#fff",
     marginBottom: 20,
+    marginTop: 13,
   },
   statsContainer: {
     flexDirection: "row",
