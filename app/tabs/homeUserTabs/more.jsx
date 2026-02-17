@@ -2,36 +2,23 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+/* ✅ Only Required Pages */
 const options = [
-  { title: "Diet", icon: "nutrition", route: "/OuterUserFrontend/diet/diet" },
-  {
-    title: "Exercise",
-    icon: "fitness",
-    route: "/OuterUserFrontend/exercise/exercise",
-  },
-
-  {
-    title: "User Details",
-    icon: "person-circle",
-    route: "/OuterUserFrontend/userDetails",
-  },
-  {
-    title: "Messages",
-    icon: "chatbubble-ellipses",
-    route: "/OuterUserFrontend/userMessages",
-  },
-
-  {
-    title: "Membership Expired",
-    icon: "alert-circle",
-    route: "/membership/expired",
-  },
   {
     title: "Plans",
     icon: "pricetags",
     route: "/OuterUserFrontend/plans/plans",
   },
-
+  {
+    title: "Diet",
+    icon: "nutrition",
+    route: "/OuterUserFrontend/diet/diet",
+  },
+  {
+    title: "Exercise",
+    icon: "fitness",
+    route: "/OuterUserFrontend/exercise/exercise",
+  },
   {
     title: "Profile",
     icon: "person",

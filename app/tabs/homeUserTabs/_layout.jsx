@@ -1,5 +1,3 @@
-
-
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { useEffect, useRef } from "react";
@@ -96,7 +94,7 @@ export default function Layout() {
       />
 
       {/* 🏋 Trainer */}
-       <Tabs.Screen
+      <Tabs.Screen
         name="Trainer"
         options={{
           title: "Trainer",
@@ -107,7 +105,7 @@ export default function Layout() {
             />
           ),
         }}
-      /> 
+      />
 
       {/* 📅 Schedule */}
       <Tabs.Screen
