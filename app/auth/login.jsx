@@ -26,12 +26,12 @@ export default function Login() {
       email === admin.email &&
       password === admin.password
     ) {
-      router.replace("/adminTabs");
+      router.replace("/tabs/adminTabs");
       return;
     }
 
     if (role === "user" && email === user.email && password === user.password) {
-      router.replace("/userTabs");
+      router.replace("/tabs/userTabs");
       return;
     }
 
@@ -40,7 +40,7 @@ export default function Login() {
       email === outer.email &&
       password === outer.password
     ) {
-      router.replace("/homeUserTabs");
+      router.replace("/tabs/homeUserTabs");
       return;
     }
 

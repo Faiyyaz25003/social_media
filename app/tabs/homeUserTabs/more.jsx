@@ -3,14 +3,22 @@ import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const options = [
-  { title: "Diet", icon: "nutrition", route: "/diet/diet" },
-  { title: "Exercise", icon: "fitness", route: "/exercise/exercise" },
+  { title: "Diet", icon: "nutrition", route: "/OuterUserFrontend/diet/diet" },
+  {
+    title: "Exercise",
+    icon: "fitness",
+    route: "/OuterUserFrontend/exercise/exercise",
+  },
 
-  { title: "User Details", icon: "person-circle", route: "/user/userDetails" },
+  {
+    title: "User Details",
+    icon: "person-circle",
+    route: "/OuterUserFrontend/userDetails",
+  },
   {
     title: "Messages",
     icon: "chatbubble-ellipses",
-    route: "/user/userMessages",
+    route: "/OuterUserFrontend/userMessages",
   },
 
   {
@@ -18,10 +26,22 @@ const options = [
     icon: "alert-circle",
     route: "/membership/expired",
   },
-  { title: "Plans", icon: "pricetags", route: "/plans/plans" },
+  {
+    title: "Plans",
+    icon: "pricetags",
+    route: "/OuterUserFrontend/plans/plans",
+  },
 
-  { title: "Profile", icon: "person", route: "/profile/profile" },
-  { title: "Settings", icon: "settings", route: "/settings/settings" },
+  {
+    title: "Profile",
+    icon: "person",
+    route: "/OuterUserFrontend/profile/profile",
+  },
+  {
+    title: "Settings",
+    icon: "settings",
+    route: "/OuterUserFrontend/settings/settings",
+  },
 ];
 
 export default function More() {
