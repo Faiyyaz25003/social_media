@@ -3,25 +3,33 @@ import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const options = [
-  { title: "Diet", icon: "nutrition", route: "/diet/diet" },
-  { title: "Exercise", icon: "fitness", route: "/exercise/exercise" },
+  { title: "Diet", icon: "nutrition", route: "/userFrontend/diet/diet" },
+  {
+    title: "Exercise",
+    icon: "fitness",
+    route: "/userFrontend/exercise/exercise",
+  },
 
-  { title: "User Details", icon: "person-circle", route: "/user/userDetails" },
+  {
+    title: "User Details",
+    icon: "person-circle",
+    route: "/userFrontend/user/userDetails",
+  },
   {
     title: "Messages",
     icon: "chatbubble-ellipses",
-    route: "/user/userMessages",
+    route: "/userFrontend/user/userMessages",
   },
 
   {
     title: "Membership Expired",
     icon: "alert-circle",
-    route: "/membership/expired",
+    route: "/userFrontend/membership/expired",
   },
-  { title: "Plans", icon: "pricetags", route: "/plans/plans" },
+  { title: "Plans", icon: "pricetags", route: "/userFrontend/plans/plans" },
 
-  { title: "Profile", icon: "person", route: "/profile/profile" },
-  { title: "Settings", icon: "settings", route: "/settings/settings" },
+  { title: "Profile", icon: "person", route: "/userFrontend/profile/profile" },
+  { title: "Settings", icon: "settings", route: "/userFrontend/settings/settings" },
 ];
 
 export default function More() {
