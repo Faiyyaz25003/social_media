@@ -1,119 +1,91 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 export default function Plans() {
-  const plans = [
-    {
-      id: 1,
-      name: "Basic Plan",
-      duration: "1 Month",
-      price: "₹999",
-      features: ["Gym Access", "Basic Workout Plan"],
-    },
-    {
-      id: 2,
-      name: "Standard Plan",
-      duration: "3 Months",
-      price: "₹2499",
-      features: ["Gym Access", "Diet Plan", "Workout Plan"],
-    },
-    {
-      id: 3,
-      name: "Premium Plan",
-      duration: "12 Months",
-      price: "₹7999",
-      features: ["Gym Access", "Personal Trainer", "Diet Plan", "Workout Plan"],
-    },
-  ];
+  const router = useRouter();
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.heading}>💪 Gym Packages</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Plan Management</Text>
 
-      {plans.map((plan) => (
-        <View key={plan.id} style={styles.card}>
-          <Text style={styles.planName}>{plan.name}</Text>
-          <Text style={styles.duration}>{plan.duration}</Text>
-          <Text style={styles.price}>{plan.price}</Text>
-
-          <View style={styles.features}>
-            {plan.features.map((feature, index) => (
-              <View key={index} style={styles.featureRow}>
-                <Ionicons name="checkmark-circle" size={18} color="#22c55e" />
-                <Text style={styles.featureText}>{feature}</Text>
-              </View>
-            ))}
-          </View>
-
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Choose Plan</Text>
-          </TouchableOpacity>
+      {/* Create Plan */}
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => router.push("/adminFrontend/plans/createPlan")}
+      >
+        <View style={styles.iconBox}>
+          <Ionicons name="add-circle-outline" size={22} color="#000" />
         </View>
-      ))}
-    </ScrollView>
+
+        <View>
+          <Text style={styles.cardTitle}>Create Plan</Text>
+          <Text style={styles.cardText}>Add new gym membership plans</Text>
+        </View>
+      </TouchableOpacity>
+
+      {/* View Plans */}
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => router.push("/adminFrontend/plans/viewPlan")}
+      >
+        <View style={styles.iconBox}>
+          <Ionicons name="eye-outline" size={22} color="#000" />
+        </View>
+
+        <View>
+          <Text style={styles.cardTitle}>View Plans</Text>
+          <Text style={styles.cardText}>View all created gym packages</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f1f5f9",
     padding: 20,
-    backgroundColor: "#f3f4f6",
+    paddingTop: 60,
   },
-  heading: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 18,
-    padding: 20,
-    marginBottom: 20,
-    elevation: 5,
-  },
-  planName: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#111",
-  },
-  duration: {
-    fontSize: 14,
-    color: "#6b7280",
-    marginTop: 4,
-  },
-  price: {
+
+  title: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#ff4757",
-    marginVertical: 10,
+    marginBottom: 25,
+    color: "#0f172a",
   },
-  features: {
-    marginBottom: 15,
-  },
-  featureRow: {
+
+  card: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 6,
+    backgroundColor: "#ffffff",
+    padding: 18,
+    borderRadius: 14,
+    marginBottom: 15,
+    elevation: 3,
   },
-  featureText: {
-    marginLeft: 8,
-    fontSize: 14,
-  },
-  button: {
-    backgroundColor: "#ff4757",
-    paddingVertical: 12,
-    borderRadius: 12,
+
+  iconBox: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: "#e2e8f0",
+    justifyContent: "center",
     alignItems: "center",
+    marginRight: 15,
   },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
+
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#0f172a",
+  },
+
+  cardText: {
+    fontSize: 13,
+    color: "#64748b",
+    marginTop: 3,
   },
 });
