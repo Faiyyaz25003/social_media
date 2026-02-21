@@ -1,4 +1,3 @@
-
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import {
@@ -14,7 +13,7 @@ export default function Home() {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* 🔽 Added spacing from top */}
+      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.heading}>🏋️ Gym Admin Panel</Text>
         <Text style={styles.subHeading}>Manage everything easily</Text>
@@ -75,6 +74,20 @@ export default function Home() {
           </View>
         </View>
       </TouchableOpacity>
+
+      {/* ✅ Progress Comparison */}
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => router.push("/adminFrontend/home/ProgressComparison")}
+      >
+        <View style={styles.row}>
+          <Ionicons name="analytics" size={26} color="#6c5ce7" />
+          <View>
+            <Text style={styles.title}>Progress Comparison</Text>
+            <Text style={styles.sub}>Before & After Analysis</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -85,13 +98,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f9fa",
     padding: 20,
   },
-
-  /* ✅ New header wrapper */
   header: {
-    marginTop: 20, // 👈 yahi se niche gaya
+    marginTop: 20,
     marginBottom: 25,
   },
-
   heading: {
     fontSize: 28,
     fontWeight: "800",
