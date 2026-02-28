@@ -1,30 +1,65 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, ActivityIndicator, StyleSheet } from "react-native";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Profile({ route }) {
-  const { token } = route.params;
+export default function Profile() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get("http://YOUR_IP:5000/api/users/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setUser(res.data));
+    const fetchProfile = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        if (!token) {
+          console.log("No token found");
+          setLoading(false);
+          return;
+        }
+
+        const res = await axios.get(
+          "http://192.168.1.5:5000/api/users/profile",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+
+        setUser(res.data);
+      } catch (err) {
+        console.log("Profile fetch error:", err.response?.data || err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
   }, []);
 
-  if (!user) return null;
+  if (loading)
+    return (
+      <ActivityIndicator size="large" color="#0000ff" style={styles.center} />
+    );
+  if (!user) return <Text style={styles.center}>No profile data found.</Text>;
 
   return (
-    <View>
-      <Text>{user.fullName}</Text>
-      <Text>{user.email}</Text>
-      <Text>{user.membershipPlan}</Text>
-      <Image
-        source={{ uri: user.qrCode }}
-        style={{ width: 200, height: 200 }}
-      />
+    <View style={styles.container}>
+      <Text style={styles.name}>{user.fullName}</Text>
+      <Text>Email: {user.email}</Text>
+      <Text>Plan: {user.membershipPlan}</Text>
+      {user.qrCode && (
+        <Image
+          source={{ uri: user.qrCode }}
+          style={styles.qr}
+          resizeMode="contain"
+        />
+      )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { padding: 20, alignItems: "center" },
+  center: { flex: 1, textAlign: "center", marginTop: 50 },
+  name: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
+  qr: { width: 200, height: 200, marginTop: 20 },
+});

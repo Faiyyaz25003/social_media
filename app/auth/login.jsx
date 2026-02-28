@@ -1,6 +1,4 @@
-
-
-//admin login
+// //admin login
 
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { router } from "expo-router";
@@ -53,7 +51,7 @@
 
 //       // ✅ Navigate to Admin Tabs
 //       // router.push("/tabs/adminTabs");
-//        router.push("/tabs/userTabs");
+//       router.push("/tabs/adminTabs");
 //     } catch (error) {
 //       Alert.alert("Login Failed", error.message);
 //     } finally {
@@ -144,8 +142,7 @@
 
 
 
-
-//user login 
+//user login
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useState } from "react";
