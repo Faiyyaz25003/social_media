@@ -1,184 +1,123 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
+  FlatList,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
+import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function ViewPlan() {
-  const [plans, setPlans] = useState([
-    {
-      id: 1,
-      name: "Basic",
-      duration: "1 Month",
-      price: "₹999",
-      priceNote: "per month",
-      features: ["Gym Access", "Basic Workout Plan"],
-      popular: false,
-    },
-    {
-      id: 2,
-      name: "Standard",
-      duration: "3 Months",
-      price: "₹2499",
-      priceNote: "₹833/mo • Save 17%",
-      features: ["Gym Access", "Diet Plan", "Workout Plan"],
-      popular: true,
-    },
-    {
-      id: 3,
-      name: "Premium",
-      duration: "12 Months",
-      price: "₹7999",
-      priceNote: "₹667/mo • Save 33%",
-      features: ["Gym Access", "Personal Trainer", "Diet Plan", "Workout Plan"],
-      popular: false,
-    },
-  ]);
+const BASE_URL = "http://YOUR_PC_IP:5000/api/plans";
 
-  const handleDelete = (id) => {
-    Alert.alert("Delete Plan", "Are you sure?", [
+export default function ViewPlansScreen() {
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  /* FETCH PLANS */
+  const fetchPlans = async () => {
+    try {
+      const res = await axios.get(BASE_URL);
+      setPlans(res.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPlans();
+  }, []);
+
+  /* DELETE PLAN */
+  const deletePlan = (id) => {
+    Alert.alert("Delete Plan", "Are you sure you want to delete this plan?", [
       { text: "Cancel" },
       {
         text: "Delete",
-        onPress: () => {
-          setPlans(plans.filter((plan) => plan.id !== id));
+        onPress: async () => {
+          try {
+            await axios.delete(`${BASE_URL}/${id}`);
+            fetchPlans();
+          } catch (error) {
+            console.log(error);
+          }
         },
       },
     ]);
   };
 
+  if (loading) {
+    return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
+  }
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.heading}>All Membership Plans</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Membership Plans</Text>
 
-      {plans.map((plan) => (
-        <View key={plan.id} style={styles.card}>
-          {/* Popular Badge */}
-          {plan.popular && (
-            <View style={styles.popularBadge}>
-              <Text style={styles.popularText}>⭐ MOST CHOSEN</Text>
+      <FlatList
+        data={plans}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.planName}>{item.planName}</Text>
+              <Text>Duration: {item.duration}</Text>
+              <Text>Price: ₹ {item.price}</Text>
+              <Text>Status: {item.status}</Text>
+              {item.isPopular && <Text style={styles.popular}>🔥 Popular</Text>}
             </View>
-          )}
 
-          {/* Plan Info */}
-          <Text style={styles.planName}>{plan.name}</Text>
-          <Text style={styles.duration}>{plan.duration}</Text>
-
-          <Text style={styles.price}>{plan.price}</Text>
-          <Text style={styles.priceNote}>{plan.priceNote}</Text>
-
-          {/* Features */}
-          <View style={styles.featureContainer}>
-            {plan.features.map((feature, index) => (
-              <View key={index} style={styles.featureRow}>
-                <Ionicons
-                  name="checkmark-circle-outline"
-                  size={18}
-                  color="#dc2626"
-                />
-                <Text style={styles.featureText}> {feature}</Text>
-              </View>
-            ))}
+            <TouchableOpacity
+              style={styles.deleteBtn}
+              onPress={() => deletePlan(item._id)}
+            >
+              <Ionicons name="trash" size={22} color="white" />
+            </TouchableOpacity>
           </View>
-
-          {/* Delete Button */}
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => handleDelete(plan.id)}
-          >
-            <Text style={styles.deleteText}>Delete Plan</Text>
-          </TouchableOpacity>
-        </View>
-      ))}
-    </ScrollView>
+        )}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
-    padding: 20,
+    padding: 15,
+    backgroundColor: "#f4f6f8",
   },
-  heading: {
-    fontSize: 24,
-    fontWeight: "900",
-    color: "#111827",
-    marginBottom: 20,
-  },
-
-  card: {
-    backgroundColor: "#f9fafb",
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 20,
-    elevation: 3,
-  },
-
-  popularBadge: {
-    backgroundColor: "#dc2626",
-    alignSelf: "flex-start",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
-    marginBottom: 8,
-  },
-  popularText: {
-    color: "#fff",
-    fontSize: 10,
-    fontWeight: "800",
-    letterSpacing: 1,
-  },
-
-  planName: {
+  title: {
     fontSize: 22,
-    fontWeight: "900",
-    color: "#111827",
-  },
-  duration: {
-    fontSize: 14,
-    color: "#6b7280",
-    marginBottom: 6,
-  },
-
-  price: {
-    fontSize: 28,
-    fontWeight: "900",
-    color: "#dc2626",
-  },
-  priceNote: {
-    fontSize: 12,
-    color: "#6b7280",
-    marginBottom: 12,
-  },
-
-  featureContainer: {
+    fontWeight: "bold",
     marginBottom: 15,
   },
-  featureRow: {
+  card: {
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 6,
-  },
-  featureText: {
-    fontSize: 14,
-    color: "#374151",
-    fontWeight: "500",
-  },
-
-  deleteButton: {
-    backgroundColor: "#111827",
-    paddingVertical: 10,
+    backgroundColor: "#fff",
+    padding: 15,
+    marginBottom: 10,
     borderRadius: 10,
+    elevation: 3,
     alignItems: "center",
   },
-  deleteText: {
-    color: "#ffffff",
-    fontWeight: "700",
+  planName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  deleteBtn: {
+    backgroundColor: "#e74c3c",
+    padding: 10,
+    borderRadius: 8,
+  },
+  popular: {
+    color: "green",
+    fontWeight: "bold",
+    marginTop: 5,
   },
 });

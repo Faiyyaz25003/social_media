@@ -1,150 +1,123 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import {
-  View,
+  Button,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Switch,
   Text,
   TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-  Switch,
+  View,
 } from "react-native";
 
-export default function CreatePlan() {
-  const [name, setName] = useState("");
-  const [duration, setDuration] = useState("");
-  const [price, setPrice] = useState("");
-  const [priceNote, setPriceNote] = useState("");
-  const [features, setFeatures] = useState("");
-  const [popular, setPopular] = useState(false);
+const BASE_URL = "http://YOUR_PC_IP:5000/api/plans"; // change this
 
-  const handleCreatePlan = () => {
-    if (!name || !duration || !price) {
-      Alert.alert("Error", "Please fill all required fields");
-      return;
-    }
+export default function PlanScreen() {
+  const [plans, setPlans] = useState([]);
+  const [form, setForm] = useState({
+    planId: "",
+    planName: "",
+    duration: "",
+    price: "",
+    description: "",
+    goalType: "",
+    workoutFrequency: "",
+    accessType: "",
+    trainerSupport: "",
+    dietPlan: "",
+    groupClasses: "",
+    progressTracking: "",
+    status: "Active",
+    isPopular: false,
+  });
 
-    const newPlan = {
-      name,
-      duration,
-      price,
-      priceNote,
-      features: features.split(",").map((f) => f.trim()),
-      popular,
-    };
+  /* FETCH PLANS */
+  const fetchPlans = async () => {
+    const res = await axios.get(BASE_URL);
+    setPlans(res.data);
+  };
 
-    console.log("Created Plan:", newPlan);
+  useEffect(() => {
+    fetchPlans();
+  }, []);
 
-    Alert.alert("Success", "Plan Created Successfully!");
-
-    // Reset Fields
-    setName("");
-    setDuration("");
-    setPrice("");
-    setPriceNote("");
-    setFeatures("");
-    setPopular(false);
+  /* ADD PLAN */
+  const addPlan = async () => {
+    await axios.post(BASE_URL, {
+      ...form,
+      price: Number(form.price),
+    });
+    fetchPlans();
   };
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.heading}>Create New Plan</Text>
+      <Text style={styles.title}>Add Membership Plan</Text>
 
-      <Text style={styles.label}>Plan Name *</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter plan name"
-        value={name}
-        onChangeText={setName}
-      />
-
-      <Text style={styles.label}>Duration *</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="1 Month / 3 Months"
-        value={duration}
-        onChangeText={setDuration}
-      />
-
-      <Text style={styles.label}>Price *</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="₹999"
-        value={price}
-        onChangeText={setPrice}
-      />
-
-      <Text style={styles.label}>Price Note</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="₹833/mo • Save 17%"
-        value={priceNote}
-        onChangeText={setPriceNote}
-      />
-
-      <Text style={styles.label}>Features (comma separated)</Text>
-      <TextInput
-        style={[styles.input, { height: 80 }]}
-        placeholder="Gym Access, Diet Plan, Personal Trainer"
-        value={features}
-        onChangeText={setFeatures}
-        multiline
-      />
+      {Object.keys(form).map((key) =>
+        key !== "isPopular" ? (
+          <TextInput
+            key={key}
+            placeholder={key}
+            style={styles.input}
+            value={form[key].toString()}
+            onChangeText={(text) => setForm({ ...form, [key]: text })}
+          />
+        ) : null,
+      )}
 
       <View style={styles.switchRow}>
-        <Text style={styles.label}>Mark as Popular</Text>
-        <Switch value={popular} onValueChange={setPopular} />
+        <Text>Is Popular</Text>
+        <Switch
+          value={form.isPopular}
+          onValueChange={(val) => setForm({ ...form, isPopular: val })}
+        />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleCreatePlan}>
-        <Text style={styles.buttonText}>Create Plan</Text>
-      </TouchableOpacity>
+      <Button title="Add Plan" onPress={addPlan} />
+
+      <Text style={styles.title}>All Plans</Text>
+
+      <FlatList
+        data={plans}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text>{item.planName}</Text>
+            <Text>₹ {item.price}</Text>
+            <Text>{item.duration}</Text>
+            <Text>Status: {item.status}</Text>
+          </View>
+        )}
+      />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-    padding: 20,
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: "900",
-    color: "#111827",
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "600",
-    marginBottom: 6,
-    color: "#374151",
+  container: { padding: 20 },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginVertical: 10,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#d1d5db",
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 15,
-    fontSize: 14,
-    backgroundColor: "#f9fafb",
+    marginVertical: 5,
+    padding: 8,
+    borderRadius: 5,
+  },
+  card: {
+    padding: 10,
+    marginVertical: 5,
+    backgroundColor: "#f2f2f2",
+    borderRadius: 5,
   },
   switchRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: "#dc2626",
-    paddingVertical: 15,
-    borderRadius: 12,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "800",
+    marginVertical: 10,
   },
 });

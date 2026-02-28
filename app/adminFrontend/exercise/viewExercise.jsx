@@ -1,89 +1,147 @@
-import { Video } from "expo-av";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import axios from "axios";
+import { useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-export default function ViewExercise() {
-  const exercises = [
-    {
-      id: 1,
-      name: "Push Ups",
-      video: "https://www.w3schools.com/html/mov_bbb.mp4",
-      description: "Chest, shoulders aur triceps strong banata hai.",
-    },
-    {
-      id: 2,
-      name: "Squats",
-      video: "https://www.w3schools.com/html/movie.mp4",
-      description: "Legs aur glutes ke liye best exercise.",
-    },
-    {
-      id: 3,
-      name: "Plank",
-      video: "https://www.w3schools.com/html/mov_bbb.mp4",
-      description: "Core strength improve karta hai.",
-    },
-    {
-      id: 4,
-      name: "Jumping Jacks",
-      video: "https://www.w3schools.com/html/movie.mp4",
-      description: "Full body cardio exercise.",
-    },
-    {
-      id: 5,
-      name: "Lunges",
-      video: "https://www.w3schools.com/html/mov_bbb.mp4",
-      description: "Leg balance aur strength ke liye.",
-    },
-  ];
+const BASE_URL = "http://YOUR_PC_IP:5000/api/exercises";
+
+export default function ExerciseViewScreen() {
+  const [exerciseId, setExerciseId] = useState("");
+  const [singleExercise, setSingleExercise] = useState(null);
+  const [allExercises, setAllExercises] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  /* GET ALL */
+  const getAllExercises = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(BASE_URL);
+      setAllExercises(res.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  /* GET BY ID */
+  const getExerciseById = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(`${BASE_URL}/${exerciseId}`);
+      setSingleExercise(res.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setSingleExercise(null);
+      setLoading(false);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
-      {exercises.map((item) => (
-        <View key={item.id} style={styles.card}>
-          {/* Video */}
-          <Video
-            source={{ uri: item.video }}
-            style={styles.video}
-            useNativeControls
-            resizeMode="contain"
-          />
+      <Text style={styles.title}>Exercise Viewer</Text>
 
-          {/* Name */}
-          <Text style={styles.name}>{item.name}</Text>
+      {/* GET BY ID SECTION */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Get Exercise By ID</Text>
 
-          {/* Description */}
-          <Text style={styles.description}>{item.description}</Text>
-        </View>
-      ))}
+        <TextInput
+          placeholder="Enter Exercise ID"
+          style={styles.input}
+          value={exerciseId}
+          onChangeText={setExerciseId}
+        />
+
+        <TouchableOpacity style={styles.btn} onPress={getExerciseById}>
+          <Text style={styles.btnText}>Get Exercise</Text>
+        </TouchableOpacity>
+
+        {singleExercise && (
+          <View style={styles.card}>
+            <Text style={styles.name}>{singleExercise.exerciseName}</Text>
+            <Text>{singleExercise.shortDescription}</Text>
+            <Text>Muscle: {singleExercise.muscleGroup}</Text>
+            <Text>Difficulty: {singleExercise.difficultyLevel}</Text>
+            <Text>Type: {singleExercise.exerciseType}</Text>
+          </View>
+        )}
+      </View>
+
+      {/* GET ALL SECTION */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Get All Exercises</Text>
+
+        <TouchableOpacity style={styles.btn} onPress={getAllExercises}>
+          <Text style={styles.btnText}>Load All Exercises</Text>
+        </TouchableOpacity>
+
+        {loading && <ActivityIndicator size="large" />}
+
+        <FlatList
+          data={allExercises}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Text style={styles.name}>{item.exerciseName}</Text>
+              <Text>{item.muscleGroup}</Text>
+              <Text>{item.difficultyLevel}</Text>
+            </View>
+          )}
+        />
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 15,
-    backgroundColor: "#f2f2f2",
+  container: { padding: 15 },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 15,
   },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 20,
-    elevation: 4, // Android shadow
+  section: {
+    marginBottom: 25,
   },
-  video: {
-    width: "100%",
-    height: 200,
-    borderRadius: 10,
-    backgroundColor: "#000",
-    marginBottom: 10,
-  },
-  name: {
+  sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 5,
+    marginBottom: 10,
   },
-  description: {
-    fontSize: 14,
-    color: "#555",
+  input: {
+    borderWidth: 1,
+    padding: 8,
+    borderRadius: 6,
+    marginBottom: 10,
+  },
+  btn: {
+    backgroundColor: "#3498db",
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  btnText: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  card: {
+    backgroundColor: "#f2f2f2",
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  name: {
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
