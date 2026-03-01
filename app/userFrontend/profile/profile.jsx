@@ -338,6 +338,10 @@
 //   actionBtnText: { color: "#fff", fontWeight: "700", fontSize: 14 },
 // });
 
+
+
+
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -368,7 +372,7 @@ export default function Profile() {
           setLoading(false);
           return;
         }
-        const res = await axios.get("http://10.0.2.2:5000/api/users/profile", {
+        const res = await axios.get("http://localhost/api/users/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(res.data);
